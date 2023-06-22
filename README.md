@@ -72,9 +72,13 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 =======
 # React-Quiz-App
+<<<<<<< HEAD
 This is a simple quiz app in React.
 >>>>>>> 7d68fa14827e4cd71a624451e1e95b33efd06c43
 =======
 # React-Quiz-App
 This is a simple quiz app in React.
 >>>>>>> origin/main
+=======
+ A simple quiz app in React.
+>>>>>>> b61da3814f90c33a8b234540e67f695831f39824
