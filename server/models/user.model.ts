@@ -1,5 +1,7 @@
+require("dotenv").config();
 import mongoose, { Document, Model, Schema } from "mongoose";
 import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -14,7 +16,9 @@ export interface IUser extends Document {
   role: string;
   isVerified: boolean;
   courses: Array<{ courseId: string }>;
-  camparePassword: (password: string) => Promise<boolean>;
+  comparePassword: (password: string) => Promise<boolean>;
+  SignAccessToken: () => string;
+  SignRefreshToken: () => string;
 }
 
 const userSchema: Schema<IUser> = new mongoose.Schema(
@@ -36,7 +40,6 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Please enter your password"],
       minlength: [8, "password must be atleast 8 characters"],
       select: false,
     },
@@ -63,6 +66,8 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+//hash passowrd before saving
 userSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) {
     next();
@@ -71,6 +76,20 @@ userSchema.pre<IUser>("save", async function (next) {
   next();
 });
 
+//sign refresh token
+userSchema.methods.SignAccessToken = function () {
+  return jwt.sign({ id: this._id }, process.env.ACCESS_TOKEN || "", {
+    expiresIn: "5m",
+  });
+};
+//sign access token
+userSchema.methods.SignRefreshToken = function () {
+  return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN || "", {
+    expiresIn: "3d",
+  });
+};
+
+//compare user password
 userSchema.methods.comparePassword = async function (
   enteredPassword: string
 ): Promise<boolean> {
