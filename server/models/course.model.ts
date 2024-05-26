@@ -1,16 +1,16 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
+import { IUser } from "./user.model";
 
-interface IComment extends Document {
-  user: object;
+ export interface IComment extends Document {
+  user: IUser;
+  question: string;
+  questionReplies: IComment[];
+}
+interface IReview extends Document {
+  user: IUser;
+  rating?: number;
   comment: string;
   commentReplies?: IComment[];
-}
-
-interface IReview extends Document {
-  user: object;
-  rating: number;
-  comment: string;
-  commentReplies: IComment[];
 }
 
 interface Ilink extends Document {
@@ -22,9 +22,9 @@ interface ICourseData extends Document {
   title: string;
   description: string;
   videoUrl: string;
-  VideomThumbnail: object;
+  VideoThumbnail: object;
   videoSection: string;
-  videoLength: string;
+  videoLength: number;
   VideoPlayer: string;
   links: Ilink[];
   suggestion: string;
@@ -35,7 +35,7 @@ interface ICourse extends Document {
   name: string;
   description: string;
   price: number;
-  estimatedPrice: number;
+  estimatedPrice?: number;
   thumbnail: object;
   tags: string;
   level: string;
@@ -55,6 +55,7 @@ const reviewSchema = new Schema<IReview>({
     default: 0,
   },
   comment: String,
+  commentReplies:[Object]
 });
 
 const linkSchema = new Schema<Ilink>({
@@ -64,13 +65,12 @@ const linkSchema = new Schema<Ilink>({
 
 const commentSchema = new Schema<IComment>({
   user: Object,
-  comment: String,
-  commentReplies: [Object],
+  question: String,
+  questionReplies: [Object],
 });
 
 const courseDataSchema = new Schema<ICourseData>({
   videoUrl: String,
-  VideomThumbnail: Object,
   title: String,
   videoSection: String,
   description: String,
@@ -98,14 +98,11 @@ const courseSchema = new Schema<ICourse>(
     estimatedPrice: {
       type: Number,
     },
-
     thumbnail: {
       public_id: {
-        required: true,
         type: String,
       },
       url: {
-        required: true,
         type: String,
       },
     },
@@ -115,7 +112,7 @@ const courseSchema = new Schema<ICourse>(
     },
     level: {
       type: String,
-      requured: true,
+      required: true,
     },
     demoUrl: {
       type: String,

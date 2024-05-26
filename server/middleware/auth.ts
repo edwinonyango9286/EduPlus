@@ -15,7 +15,6 @@ export const isAunthenticated = CatchAsyncError(
         new ErrorHandler("Please login to access this resource", 400)
       );
     }
-
     const decoded = jwt.verify(
       access_token,
       process.env.ACCESS_TOKEN as string
@@ -25,7 +24,7 @@ export const isAunthenticated = CatchAsyncError(
     }
     const user = await redis.get(decoded.id);
     if (!user) {
-      return next(new ErrorHandler("User not found", 400));
+      return next(new ErrorHandler("Please login to access this resource", 400));
     }
     (req as any).user = JSON.parse(user);
     next();
